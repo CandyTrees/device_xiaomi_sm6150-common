@@ -181,8 +181,13 @@ PRODUCT_PACKAGES += \
     android.hardware.health-service.qti_recovery
 
 # Init scripts
+ifeq ($(TARGET_BUILD_VARIANT),eng)
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init.qcom_eng.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.qcom.rc
+else
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/init.qcom.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.qcom.rc
+endif
 
 ifeq ($(WITH_GMS),true)
 PRODUCT_COPY_FILES += \

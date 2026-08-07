@@ -344,6 +344,17 @@ esac
     echo 1 > /proc/sys/vm/oom_kill_allocating_task
     echo 0 > /proc/sys/vm/oom_dump_tasks
     echo 0 > /proc/sys/vm/page-cluster
+    
+    # Dynamic ZRAM (50% of physical RAM)
+if [ -b /dev/block/zram0 ] && [ -w /sys/block/zram0/disksize ]; then
+    zram_size=$(awk '/MemTotal/ {printf "%.0f", ($2 * 1024) / 2}' /proc/meminfo)
+
+    swapoff /dev/block/zram0 2>/dev/null
+    echo 1 > /sys/block/zram0/reset
+    echo "$zram_size" > /sys/block/zram0/disksize
+    mkswap /dev/block/zram0
+    swapon /dev/block/zram0
+fi
 
 # Enable PowerHAL hint processing
 setprop vendor.powerhal.init 1
